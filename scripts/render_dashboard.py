@@ -311,7 +311,7 @@ def draw_heatmap_and_rank(img, draw, y, data, avatars=None) -> int:
     sub2_h = section_h - sub1_h - 12
 
     draw_repo_card(draw, rx, ry, right_w, sub1_h, data.get("repos", []))
-    draw_member_card(draw, rx, ry + sub1_h + 12, right_w, sub2_h, data.get("members", []), avatars=avatars)
+    draw_member_card(draw, rx, ry + sub1_h + 12, right_w, sub2_h, data.get("members", []), avatars=avatars, img=img)
 
     return y + section_h + 24
 
@@ -453,7 +453,7 @@ def _load_member_avatars(members: list[dict[str, Any]], target: int = 32) -> dic
     return out
 
 
-def draw_member_card(draw, x, y, w, h, members, avatars=None):
+def draw_member_card(draw, x, y, w, h, members, avatars=None, img=None):
     _round_rect(draw, (x, y, x + w, y + h), 8, fill=CARD_BG, outline=DIVIDER, width=1)
     _draw_text(draw, (x + 16, y + 12), "成员贡献 · CONTRIBUTORS", _font(15, bold=True), GOLD)
     f_name   = _font(14, bold=True)
