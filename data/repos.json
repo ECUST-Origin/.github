@@ -22,8 +22,8 @@
     "Linux"
   ],
   "recruit": {
-    "status": "招新详情请见公众号",
-    "signup": "赛季初开放招新",
+    "status": "敬请期待",
+    "signup": "春季学期开放",
     "public_account": "起源ORIGIN",
     "qq_group": "917345447",
     "email": "待填充",
@@ -33,7 +33,7 @@
   "repos": [
     {
       "name": ".github",
-      "stars": 0,
+      "stars": 1,
       "language": "Python",
       "desc": "主页看板",
       "url": "https://github.com/ECUST-Origin/.github"
@@ -43,7 +43,7 @@
     {
       "login": "github-actions[bot]",
       "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
-      "commits": 2
+      "commits": 3
     }
   ],
   "heatmap": [
@@ -409,8 +409,8 @@
     0,
     0,
     0,
-    0,
-    6
+    8,
+    2
   ],
-  "fetched_at": "2026-08-06T15:11:26.616961+00:00"
+  "fetched_at": "2026-08-07T16:06:10.640548+00:00"
 }
