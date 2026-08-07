@@ -5,9 +5,9 @@
     "slogan": "起源足下 · 不见高山",
     "university": "华东理工大学",
     "department": "机械与动力工程学院 / 大学生创新创业中心",
-    "founded": "2024",
+    "founded": "2023",
     "season": "RoboMaster 2026",
-    "stage": "备赛中"
+    "stage": "全国赛ing"
   },
   "stack": [
     "C", "C++", "Python", "TypeScript",
@@ -15,13 +15,13 @@
     "SolidWorks", "Linux"
   ],
   "recruit": {
-    "status": "招新中",
+    "status": "敬请期待",
     "signup": "春季学期开放",
     "public_account": "起源ORIGIN",
-    "qq_group": "待补充",
-    "email": "ecust.origin@example.com",
+    "qq_group": "917345447",
+    "email": "待填充",
     "website": "https://ecust-origin.github.io",
-    "address": "上海市徐汇区梅陇路 130 号"
+    "address": "上海市奉贤区华东理工大学（奉贤校区）信息楼601室"
   },
   "repos_override": null,
   "members_override": null
