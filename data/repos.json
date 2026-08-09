@@ -32,18 +32,51 @@
   },
   "repos": [
     {
+      "name": "framework-SuperCap2026",
+      "stars": 3,
+      "language": "C",
+      "desc": "起源战队超电固件仓库",
+      "url": "https://github.com/ECUST-Origin/framework-SuperCap2026"
+    },
+    {
       "name": ".github",
       "stars": 1,
       "language": "Python",
       "desc": "主页看板",
       "url": "https://github.com/ECUST-Origin/.github"
+    },
+    {
+      "name": "framware-Non-invasive-wireless-power-meter2025",
+      "stars": 0,
+      "language": "C",
+      "desc": "起源25赛季非侵入式无线功率计（车载）：支持CAN",
+      "url": "https://github.com/ECUST-Origin/framware-Non-invasive-wireless-power-meter2025"
+    },
+    {
+      "name": "framework-Uart2Can2025",
+      "stars": 0,
+      "language": "C",
+      "desc": "起源轮腿用双uart转can固件仓库（用于激光测距）",
+      "url": "https://github.com/ECUST-Origin/framework-Uart2Can2025"
+    },
+    {
+      "name": "docs",
+      "stars": 0,
+      "language": "",
+      "desc": "起源战队wiki仓库",
+      "url": "https://github.com/ECUST-Origin/docs"
     }
   ],
   "members": [
     {
+      "login": "baibaidebai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/162134017?v=4",
+      "commits": 16
+    },
+    {
       "login": "github-actions[bot]",
       "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
-      "commits": 4
+      "commits": 5
     }
   ],
   "heatmap": [
@@ -167,6 +200,8 @@
     0,
     0,
     0,
+    1,
+    1,
     0,
     0,
     0,
@@ -290,11 +325,7 @@
     0,
     0,
     0,
-    0,
-    0,
-    0,
-    0,
-    0,
+    2,
     0,
     0,
     0,
@@ -410,7 +441,9 @@
     0,
     0,
     8,
-    3
+    4,
+    9,
+    0
   ],
-  "fetched_at": "2026-08-07T16:07:00.539907+00:00"
+  "fetched_at": "2026-08-09T01:00:50.676515+00:00"
 }
