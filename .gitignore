@@ -1,0 +1,7 @@
+# Simple Icons SVG cache (downloaded by render_dashboard.py)
+# Keep the icons/ directory ignored so it isn't checked in.
+assets/icons/
+
+# Python bytecode
+__pycache__/
+*.pyc

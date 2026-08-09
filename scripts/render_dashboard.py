@@ -1,10 +1,13 @@
 """Render the ECUST ORIGIN dashboard PNG (black + gold, low-sat icons).
 
 Reads data/repos.json (produced by fetch_data.py) and writes
-assets/dashboard.png. Pure Pillow, no network calls.
+assets/dashboard.png. Pure Pillow, plus optional cairosvg to fetch
+official Simple Icons for the tech-stack pills (downloaded once and
+cached under assets/icons/, then desaturated to ICON_GRAY).
 
 If no data is found, falls back to mock data so the pipeline always
-produces a valid PNG.
+produces a valid PNG. If cairosvg (or libcairo) is unavailable, the
+stack pills degrade to first-letter monograms rather than crashing.
 """
 
 from __future__ import annotations
@@ -21,6 +24,17 @@ try:
     import requests
 except ImportError:  # optional: only needed for live member avatars
     requests = None  # type: ignore
+
+# cairosvg's cffi backend lazily loads libcairo; if the system library
+# is missing (common on Windows) import succeeds but every call raises
+# OSError. Treat both as "cairosvg unavailable".
+try:
+    import cairosvg as _cairosvg  # noqa: F401
+    cairosvg = _cairosvg
+    cairosvg_available = True
+except Exception:
+    cairosvg = None  # type: ignore
+    cairosvg_available = False
 
 
 # --------------------------------------------------------------------------- #
@@ -63,6 +77,27 @@ LANG_COLORS = {
     "SolidWorks":(140,  80,  80),
     "CAD":       (140,  80,  80),
 }
+
+
+# Stack label -> Simple Icons slug. None means no official icon; the
+# pill will be drawn with a first-letter monogram instead.
+SI_VERSION = "16.28.0"
+SI_BASE = (
+    f"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@{SI_VERSION}/icons"
+)
+STACK_ICONS: dict[str, str | None] = {
+    "C":          "c",
+    "C++":        "cplusplus",
+    "Python":     "python",
+    "TypeScript": "typescript",
+    "STM32":      "stmicroelectronics",   # SI has no STM32; use ST parent
+    "OpenCV":     "opencv",
+    "FreeRTOS":   None,                    # SI has no FreeRTOS
+    "ROS":        "ros",
+    "SolidWorks": "dassaultsystemes",      # SI has no SolidWorks; use parent
+    "Linux":      "linux",
+}
+ICON_PX = 18  # rendered icon size for stack pills
 
 
 # --------------------------------------------------------------------------- #
@@ -154,6 +189,48 @@ def _round_rect(draw: ImageDraw.ImageDraw, xy, radius, fill=None, outline=None, 
     draw.rounded_rectangle(xy, radius=radius, fill=fill, outline=outline, width=width)
 
 
+def _load_stack_icons(stack: list[str], cache_dir: Path) -> dict[str, Image.Image | None]:
+    """Fetch official Simple Icons SVGs for each stack label and render
+    them as desaturated ICON_GRAY PNGs.
+
+    Returns a mapping label -> PIL Image (RGBA, ICON_PX x ICON_PX), or None
+    if the icon is unavailable (no slug, network failure, missing cairosvg).
+    """
+    out: dict[str, Image.Image | None] = {name: None for name in stack}
+    if not stack or not cairosvg_available or requests is None:
+        return out
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    for name in stack:
+        slug = STACK_ICONS.get(name)
+        if not slug:
+            continue
+        svg_path = cache_dir / f"{slug}.svg"
+        try:
+            if not svg_path.exists():
+                r = requests.get(f"{SI_BASE}/{slug}.svg", timeout=10,
+                                 headers={"User-Agent": "ecust-origin-dashboard"})
+                if r.status_code != 200 or not r.content:
+                    continue
+                svg_path.write_bytes(r.content)
+            png_bytes = cairosvg.svg2png(
+                bytestring=svg_path.read_bytes(),
+                output_width=ICON_PX * 4,
+                output_height=ICON_PX * 4,
+            )
+            from io import BytesIO
+            im = Image.open(BytesIO(png_bytes)).convert("RGBA")
+            im = im.resize((ICON_PX, ICON_PX), Image.LANCZOS)
+            gray = im.convert("LA").convert("RGBA")
+            _, _, _, alpha = gray.split()
+            solid = Image.new("RGBA", gray.size, ICON_GRAY + (255,))
+            out[name] = Image.composite(
+                solid, Image.new("RGBA", gray.size, (0, 0, 0, 0)), alpha
+            )
+        except Exception:
+            continue
+    return out
+
+
 def _text_w(draw, text, font):
     bbox = draw.textbbox((0, 0), text, font=font)
     return bbox[2] - bbox[0], bbox[3] - bbox[1]
@@ -218,7 +295,7 @@ def draw_hero(img: Image.Image, draw: ImageDraw.ImageDraw, team: dict) -> int:
     return rule_y + 40
 
 
-def draw_three_cards(img, draw, y, data) -> int:
+def draw_three_cards(img, draw, y, data, icons=None) -> int:
     card_h = 150
     gap = 16
     card_w = (W - MARGIN * 2 - gap * 2) // 3
@@ -246,27 +323,47 @@ def draw_three_cards(img, draw, y, data) -> int:
         _draw_text(draw, (x + 16, y + 14), titles[i], f_title, GOLD)
 
         if i == 0:
-            # stack — GitHub-style language color pills (small dot + name, 4 cols)
+            # stack — official Simple Icons (desaturated gray) + name, 4 cols
             stack = data.get("stack", [])
+            icons = icons or {}
             px = x + 16
             py = y + 50
-            pill_w = 78
-            pill_h = 26
+            pill_w = 96
+            pill_h = 28
             gap_h = 8
-            gap_v = 5
+            gap_v = 6
             col_count = 4
             for k, name in enumerate(stack[:10]):
                 r = k // col_count
                 c = k % col_count
                 cx = px + c * (pill_w + gap_h)
                 cy = py + r * (pill_h + gap_v)
-                col = LANG_COLORS.get(name, (100, 100, 100))
                 # background pill
-                _round_rect(draw, (cx, cy, cx + pill_w - 8, cy + pill_h), 4, fill=(28, 28, 28), outline=DIVIDER)
-                # colored dot
-                _round_rect(draw, (cx + 6, cy + 7, cx + 14, cy + 15), 4, fill=col, outline=None)
+                _round_rect(draw, (cx, cy, cx + pill_w, cy + pill_h), 4,
+                            fill=(28, 28, 28), outline=DIVIDER)
+                # icon (Simple Icons) or fallback dot
+                icon = icons.get(name)
+                icon_size = ICON_PX
+                ix = cx + 8
+                iy = cy + (pill_h - icon_size) // 2
+                if icon is not None:
+                    img.paste(icon, (ix, iy), icon)
+                else:
+                    # Fallback: first-letter monogram in a rounded square
+                    mono = (name[:1] or "?").upper()
+                    col = LANG_COLORS.get(name, (100, 100, 100))
+                    _round_rect(draw,
+                                (ix, iy, ix + icon_size, iy + icon_size),
+                                4, fill=col, outline=None)
+                    bbox = draw.textbbox((0, 0), mono, f_kv_v)
+                    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+                    _draw_text(draw,
+                               (ix + (icon_size - tw) // 2,
+                                iy + (icon_size - th) // 2 - 1),
+                               mono, f_kv_v, BG)
                 # name
-                _draw_text(draw, (cx + 18, cy + 5), name, f_kv_v, ICON_GRAY)
+                text_x = ix + icon_size + 6
+                _draw_text(draw, (text_x, cy + (pill_h - 16) // 2), name, f_kv_v, ICON_GRAY)
         else:
             for k, (kk, vv) in enumerate(bodies[i]):
                 yy = y + 46 + k * 24
@@ -442,12 +539,7 @@ def _load_member_avatars(members: list[dict[str, Any]], target: int = 32) -> dic
             from io import BytesIO
             im = Image.open(BytesIO(r.content)).convert("RGBA")
             im = im.resize((target, target), Image.LANCZOS)
-            # Convert to grayscale, then map RGB to ICON_GRAY while keeping alpha
-            gray = im.convert("LA").convert("RGBA")
-            r_, g_, b_, a_ = gray.split()
-            solid = Image.new("RGBA", gray.size, ICON_GRAY + (255,))
-            im_desat = Image.composite(solid, Image.new("RGBA", gray.size, (0, 0, 0, 0)), a_)
-            out[login] = im_desat
+            out[login] = im
         except Exception:
             out[login] = None
     return out
@@ -528,12 +620,14 @@ def load_data(path: Path) -> dict[str, Any]:
 def render(data_path: Path, out_path: Path) -> None:
     data = load_data(data_path)
     avatars = _load_member_avatars(data.get("members", [])) if data.get("members") else {}
+    icon_cache_dir = out_path.parent.parent / "assets" / "icons"
+    icons = _load_stack_icons(data.get("stack", []), icon_cache_dir)
     img = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(img)
 
     y = MARGIN
     y = draw_hero(img, draw, data["team"]) + 8
-    y = draw_three_cards(img, draw, y, data)
+    y = draw_three_cards(img, draw, y, data, icons=icons)
     y = draw_heatmap_and_rank(img, draw, y, data, avatars=avatars)
     draw_footer(img, draw, H - MARGIN + 4, data.get("fetched_at", ""))
 
