@@ -27,6 +27,24 @@ except ImportError:  # pragma: no cover
 
 GH_API = "https://api.github.com"
 
+# Logins that should never appear in the contributors roll. GitHub App
+# bots use a "[bot]" suffix; web-flow is the web editor's account.
+_BOT_LOGIN_SUFFIX = "[bot]"
+_KNOWN_NON_HUMAN = {"web-flow"}
+
+
+def _is_bot(author: dict[str, Any]) -> bool:
+    login = (author.get("login") or "").lower()
+    if not login:
+        return True
+    if login.endswith(_BOT_LOGIN_SUFFIX):
+        return True
+    if login in _KNOWN_NON_HUMAN:
+        return True
+    if (author.get("type") or "").lower() == "bot":
+        return True
+    return False
+
 
 def _headers(token: str | None) -> dict[str, str]:
     h = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}
@@ -97,13 +115,16 @@ def fetch_contributors(org: str, token: str | None = None) -> list[dict[str, Any
             if r.status_code != 200:
                 continue
             for c in r.json() or []:
-                author = (c.get("author") or {}).get("login") or "ghost"
-                avatar = (c.get("author") or {}).get("avatar_url") or ""
-                if author == "ghost":
+                author_obj = c.get("author") or {}
+                if _is_bot(author_obj):
                     continue
-                if author not in counts:
-                    counts[author] = {"login": author, "avatar_url": avatar, "commits": 0}
-                counts[author]["commits"] += 1
+                login = (author_obj.get("login") or "").lower()
+                if not login:
+                    continue
+                avatar = author_obj.get("avatar_url") or ""
+                if login not in counts:
+                    counts[login] = {"login": login, "avatar_url": avatar, "commits": 0}
+                counts[login]["commits"] += 1
         except Exception:
             continue
     out = sorted(counts.values(), key=lambda x: x["commits"], reverse=True)[:8]
