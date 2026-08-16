@@ -32,11 +32,11 @@
   },
   "repos": [
     {
-      "name": "framework-SuperCap2026",
+      "name": "frameware-SuperCap2026",
       "stars": 3,
       "language": "C",
       "desc": "起源战队超电固件仓库",
-      "url": "https://github.com/ECUST-Origin/framework-SuperCap2026"
+      "url": "https://github.com/ECUST-Origin/frameware-SuperCap2026"
     },
     {
       "name": ".github",
@@ -46,42 +46,61 @@
       "url": "https://github.com/ECUST-Origin/.github"
     },
     {
-      "name": "framware-Non-invasive-wireless-power-meter2025",
-      "stars": 0,
-      "language": "C",
-      "desc": "起源25赛季非侵入式无线功率计（车载）：支持CAN",
-      "url": "https://github.com/ECUST-Origin/framware-Non-invasive-wireless-power-meter2025"
-    },
-    {
-      "name": "framework-Uart2Can2025",
-      "stars": 0,
-      "language": "C",
-      "desc": "起源轮腿用双uart转can固件仓库（用于激光测距）",
-      "url": "https://github.com/ECUST-Origin/framework-Uart2Can2025"
-    },
-    {
       "name": "docs",
       "stars": 0,
       "language": "",
       "desc": "起源战队wiki仓库",
       "url": "https://github.com/ECUST-Origin/docs"
+    },
+    {
+      "name": "hardware-fw-AutoAmmoExchange",
+      "stars": 0,
+      "language": "C",
+      "desc": "【现役】一键买弹自定义控制器",
+      "url": "https://github.com/ECUST-Origin/hardware-fw-AutoAmmoExchange"
+    },
+    {
+      "name": "frameware-Non-invasive-wireless-power-meter2025",
+      "stars": 0,
+      "language": "C",
+      "desc": "起源25赛季非侵入式无线功率计（车载）：支持CAN",
+      "url": "https://github.com/ECUST-Origin/frameware-Non-invasive-wireless-power-meter2025"
+    },
+    {
+      "name": "frameware-Uart2Can2025",
+      "stars": 0,
+      "language": "C",
+      "desc": "起源轮腿用双uart转can固件仓库（用于激光测距）",
+      "url": "https://github.com/ECUST-Origin/frameware-Uart2Can2025"
+    },
+    {
+      "name": "hardware-fw-PowerRuneSubCtrl",
+      "stars": 0,
+      "language": "C",
+      "desc": "【现役】大符扇叶控制器 | 击打检测&灯效控制",
+      "url": "https://github.com/ECUST-Origin/hardware-fw-PowerRuneSubCtrl"
+    },
+    {
+      "name": "hardware-fw-UartLidarCtrl",
+      "stars": 0,
+      "language": "C",
+      "desc": "【现役】轮腿双通道激光测距控制器",
+      "url": "https://github.com/ECUST-Origin/hardware-fw-UartLidarCtrl"
     }
   ],
   "members": [
     {
       "login": "baibaidebai",
       "avatar_url": "https://avatars.githubusercontent.com/u/162134017?v=4",
-      "commits": 18
+      "commits": 25
+    },
+    {
+      "login": "xwvoid114514",
+      "avatar_url": "https://avatars.githubusercontent.com/u/185521318?v=4",
+      "commits": 4
     }
   ],
   "heatmap": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     0,
     0,
     0,
@@ -321,15 +340,15 @@
     0,
     0,
     2,
+    1,
     0,
     0,
     0,
     0,
     0,
     0,
-    0,
-    0,
-    0,
+    1,
+    1,
     0,
     0,
     0,
@@ -438,7 +457,14 @@
     8,
     4,
     9,
-    4
+    7,
+    0,
+    0,
+    0,
+    0,
+    6,
+    0,
+    0
   ],
-  "fetched_at": "2026-08-09T04:54:10.250918+00:00"
+  "fetched_at": "2026-08-16T00:44:08.780283+00:00"
 }
