@@ -46,6 +46,13 @@
       "url": "https://github.com/ECUST-Origin/.github"
     },
     {
+      "name": "hardware-fw-PowerRuneSubCtrl",
+      "stars": 0,
+      "language": "C",
+      "desc": "【现役】大符扇叶控制器 | 击打检测&灯效控制",
+      "url": "https://github.com/ECUST-Origin/hardware-fw-PowerRuneSubCtrl"
+    },
+    {
       "name": "docs",
       "stars": 0,
       "language": "",
@@ -74,13 +81,6 @@
       "url": "https://github.com/ECUST-Origin/frameware-Uart2Can2025"
     },
     {
-      "name": "hardware-fw-PowerRuneSubCtrl",
-      "stars": 0,
-      "language": "C",
-      "desc": "【现役】大符扇叶控制器 | 击打检测&灯效控制",
-      "url": "https://github.com/ECUST-Origin/hardware-fw-PowerRuneSubCtrl"
-    },
-    {
       "name": "hardware-fw-UartLidarCtrl",
       "stars": 0,
       "language": "C",
@@ -97,7 +97,7 @@
     {
       "login": "xwvoid114514",
       "avatar_url": "https://avatars.githubusercontent.com/u/185521318?v=4",
-      "commits": 4
+      "commits": 5
     }
   ],
   "heatmap": [
@@ -186,13 +186,6 @@
     0,
     0,
     0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     1,
     1,
     0,
@@ -318,14 +311,6 @@
     0,
     0,
     0,
-    2,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     1,
     1,
     0,
@@ -334,6 +319,8 @@
     0,
     0,
     0,
+    1,
+    1,
     0,
     0,
     0,
@@ -390,6 +377,7 @@
     0,
     0,
     0,
+    1,
     0,
     0,
     0,
@@ -403,6 +391,7 @@
     0,
     0,
     0,
+    1,
     0,
     0,
     0,
@@ -415,6 +404,10 @@
     0,
     0,
     0,
+    0,
+    0,
+    0,
+    1,
     0,
     0,
     0,
@@ -464,7 +457,14 @@
     0,
     0,
     0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
     0
   ],
-  "fetched_at": "2026-09-06T02:02:02.199754+00:00"
+  "fetched_at": "2026-09-13T02:12:17.603950+00:00"
 }
